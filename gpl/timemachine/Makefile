@@ -20,7 +20,7 @@ SUBDIRS += libxml2-2.7.2
 endif
 SUBDIRS += openssl-0.9.8e
 SUBDIRS += netatalk-utility
-SUBDIRS += netatalk-2.2.5
+SUBDIRS += netatalk-2.2.0
 ifeq ($(ARCH),arm)
 AR = arm-brcm-linux-uclibcgnueabi-ar 
 CC = arm-brcm-linux-uclibcgnueabi-gcc
@@ -69,11 +69,6 @@ install:
 	rm -f $(TARGETDIR)/etc/avahi/services
 	ln -s /tmp/avahi/services $(TARGETDIR)/etc/avahi/services
 	install -d -m0755 $(TARGETDIR)/etc/init.d
-	chmod 777 $(PKG_INSTALL_DIR)/usr/lib/*
-	$(STRIP) $(PKG_INSTALL_DIR)/usr/lib/*.so.*
-	$(STRIP) $(PKG_INSTALL_DIR)/usr/lib/*.so
-	$(STRIP) $(PKG_INSTALL_DIR)/usr/local/sbin/*
-	install -m 755 $(PKG_INSTALL_DIR)/usr/lib/libdb-*.so $(TARGETDIR)/usr/lib/
 ifneq ($(CONFIG_ISERVER),y)
 	install -m0755 $(TIMEMACHINE_PATH)/avahi-0.6.25/files/avahi-daemon.init $(TARGETDIR)/etc/init.d/avahi-daemon	
 	install -m 755 $(PKG_INSTALL_DIR)/usr/lib/libgdbm.so.* $(TARGETDIR)/usr/lib/
@@ -93,10 +88,10 @@ ifneq ($(CONFIG_ISERVER),y)
 	install -m 755 $(PKG_INSTALL_DIR)/usr/sbin/avahi-dnsconfd $(TARGETDIR)/usr/sbin/	
 endif
 ifeq ($(CONFIG_ISERVER),y)
-	install -m0644 $(TIMEMACHINE_PATH)/avahi-0.6.25/files/afpd.service $(TARGETDIR)/usr/config/avahi/services/afpd.service
-	install -m0644 $(TIMEMACHINE_PATH)/avahi-0.6.25/files/service-http $(TARGETDIR)/usr/config/avahi/services/http.service
-	install -m0644 $(TIMEMACHINE_PATH)/avahi-0.6.25/files/smbd.service $(TARGETDIR)/usr/config/avahi/services/smbd.service
-	install -m0644 $(TIMEMACHINE_PATH)/avahi-0.6.25/files/adisk.service $(TARGETDIR)/usr/config/avahi/services/adisk.service
+	install -m0644 $(TIMEMACHINE_PATH)/avahi-0.6.25/files/afpd.service $(TARGETDIR)/usr/etc/afpd.service
+	install -m0644 $(TIMEMACHINE_PATH)/avahi-0.6.25/files/service-http $(TARGETDIR)/usr/etc/http.service
+	install -m0644 $(TIMEMACHINE_PATH)/avahi-0.6.25/files/smbd.service $(TARGETDIR)/usr/etc/smbd.service
+	install -m0644 $(TIMEMACHINE_PATH)/avahi-0.6.25/files/adisk.service $(TARGETDIR)/usr/etc/adisk.service
 else
 	install -m0644 $(TIMEMACHINE_PATH)/avahi-0.6.25/files/afpd.service $(TARGETDIR)/usr/config/avahi/services/afpd.service
 	install -m0644 $(TIMEMACHINE_PATH)/avahi-0.6.25/files/service-http $(TARGETDIR)/usr/config/avahi/services/http.service
@@ -105,6 +100,7 @@ else
 endif
 ifneq ($(CONFIG_ISERVER),y)
 	install -m 755 $(PKG_INSTALL_DIR)/usr/lib/libgcrypt.so.* $(TARGETDIR)/usr/lib/
+	install -m 755 $(PKG_INSTALL_DIR)/usr/lib/libdb-*.so $(TARGETDIR)/usr/lib/
 	install -m 755 $(PKG_INSTALL_DIR)/usr/lib/libxml2.so $(TARGETDIR)/usr/lib/
 	install -m 755 $(PKG_INSTALL_DIR)/usr/lib/libxml2.so.* $(TARGETDIR)/usr/lib/
 endif
@@ -118,25 +114,20 @@ endif
 	rm -f $(TARGETDIR)/etc/netatalk/afppasswd
 	ln -s /tmp/netatalk/afppasswd $(TARGETDIR)/etc/netatalk/afppasswd
 	install -d -m0755 $(TARGETDIR)/usr/config/netatalk
-	$(STRIP) $(TIMEMACHINE_PATH)/netatalk-2.2.5/etc/afpd/afpd
-	install -m 755 $(TIMEMACHINE_PATH)/netatalk-2.2.5/etc/afpd/afpd $(TARGETDIR)/usr/sbin/
-	$(STRIP) $(TIMEMACHINE_PATH)/netatalk-2.2.5/bin/afppasswd/afppasswd
-	install -m 755 $(TIMEMACHINE_PATH)/netatalk-2.2.5/bin/afppasswd/afppasswd $(TARGETDIR)/usr/sbin/
-	$(STRIP) $(TIMEMACHINE_PATH)/netatalk-2.2.5/etc/cnid_dbd/cnid_dbd
-	install -m 755 $(TIMEMACHINE_PATH)/netatalk-2.2.5/etc/cnid_dbd/cnid_dbd $(TARGETDIR)/usr/sbin/
-	$(STRIP) $(TIMEMACHINE_PATH)/netatalk-2.2.5/etc/cnid_dbd/cnid_metad 
-	install -m 755 $(TIMEMACHINE_PATH)/netatalk-2.2.5/etc/cnid_dbd/cnid_metad $(TARGETDIR)/usr/sbin/
-	$(STRIP) $(TIMEMACHINE_PATH)/netatalk-2.2.5/etc/uams/.libs/*.so
-	install -m 755 $(TIMEMACHINE_PATH)/netatalk-2.2.5/etc/uams/.libs/*.so $(TARGETDIR)/usr/lib/uams/
+	install -m 755 $(TIMEMACHINE_PATH)/netatalk-2.2.0/etc/afpd/afpd $(TARGETDIR)/usr/sbin/
+	install -m 755 $(TIMEMACHINE_PATH)/netatalk-2.2.0/bin/afppasswd/afppasswd $(TARGETDIR)/usr/sbin/
+	install -m 755 $(TIMEMACHINE_PATH)/netatalk-2.2.0/etc/cnid_dbd/cnid_dbd $(TARGETDIR)/usr/sbin/
+	install -m 755 $(TIMEMACHINE_PATH)/netatalk-2.2.0/etc/cnid_dbd/cnid_metad $(TARGETDIR)/usr/sbin/
+	install -m 755 $(TIMEMACHINE_PATH)/netatalk-2.2.0/etc/uams/.libs/*.so $(TARGETDIR)/usr/lib/uams/
 	rm -f $(TARGETDIR)/usr/lib/uams/uams_dhx.so
 	rm -f $(TARGETDIR)/usr/lib/uams/uams_dhx2.so
 	ln -s /usr/lib/uams/uams_dhx_passwd.so $(TARGETDIR)/usr/lib/uams/uams_dhx.so
 	ln -s /usr/lib/uams/uams_dhx2_passwd.so $(TARGETDIR)/usr/lib/uams/uams_dhx2.so
-	cp $(TIMEMACHINE_PATH)/netatalk-2.2.5/files/AppleVolumes.default $(TARGETDIR)/usr/config/netatalk/
-	cp $(TIMEMACHINE_PATH)/netatalk-2.2.5/files/AppleVolumes.system $(TARGETDIR)/etc/netatalk/
-	install -m0600 $(TIMEMACHINE_PATH)/netatalk-2.2.5/files/afpd.conf $(TARGETDIR)/etc/netatalk/
-	install -m0755 $(TIMEMACHINE_PATH)/netatalk-2.2.5/files/afpd.init $(TARGETDIR)/etc/init.d/afpd
-	install -m0755 $(TIMEMACHINE_PATH)/netatalk-2.2.5/files/detach_afp_shares $(TARGETDIR)/usr/sbin/detach_afp_shares
+	cp $(TIMEMACHINE_PATH)/netatalk-2.2.0/files/AppleVolumes.default $(TARGETDIR)/usr/config/netatalk/
+	cp $(TIMEMACHINE_PATH)/netatalk-2.2.0/files/AppleVolumes.system $(TARGETDIR)/etc/netatalk/
+	install -m0600 $(TIMEMACHINE_PATH)/netatalk-2.2.0/files/afpd.conf $(TARGETDIR)/etc/netatalk/
+	install -m0755 $(TIMEMACHINE_PATH)/netatalk-2.2.0/files/afpd.init $(TARGETDIR)/etc/init.d/afpd
+	install -m0755 $(TIMEMACHINE_PATH)/netatalk-2.2.0/files/detach_afp_shares $(TARGETDIR)/usr/sbin/detach_afp_shares
 	rm -f $(TARGETDIR)/etc/shadow
 	rm -f $(TARGETDIR)/etc/shadow+
 	ln -s /tmp/config/shadow $(TARGETDIR)/etc/shadow
