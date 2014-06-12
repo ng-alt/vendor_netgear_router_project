@@ -30,6 +30,8 @@ CONFIG_5G_AUTO_CHANNEL=y
 
 #Foxconn Perry added start, 2012/04/02, for access control
 CONFIG_ACCESSCONTROL=y
+
+CONFIG_GPIO_LED_SWITCH=y
 #Foxconn Perry added end, 2012/04/02, for access control
 
 # CONFIG_NAT is not set
@@ -56,6 +58,8 @@ CONFIG_DHCPV6C=y
 CONFIG_UCLIBC=y
 CONFIG_LIBOPT=y
 CONFIG_USBAP=y
+CONFIG_GMAC3=y
+CONFIG_DHDAP=y
 CONFIG_SQUASHFS=y
 # CONFIG_CRAMFS is not set
 
@@ -69,6 +73,7 @@ CONFIG_LIBUPNP=y
 # CONFIG_SAMBA is not set
 # CONFIG_FFMPEG is not set
 CONFIG_TASKSET=y
+CONFIG_MPSTAT=y
 
 #
 # DLNA
