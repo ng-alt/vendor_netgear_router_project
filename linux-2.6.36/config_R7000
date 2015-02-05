@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.36.4
-# Wed Sep 11 14:29:18 2013
+# Thu Aug 21 08:37:24 2014
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -826,7 +826,7 @@ CONFIG_BLK_DEV_SD=y
 # CONFIG_BLK_DEV_SR is not set
 # CONFIG_CHR_DEV_SG is not set
 # CONFIG_CHR_DEV_SCH is not set
-# CONFIG_SCSI_MULTI_LUN is not set
+CONFIG_SCSI_MULTI_LUN=y
 CONFIG_SCSI_CONSTANTS=y
 # CONFIG_SCSI_LOGGING is not set
 # CONFIG_SCSI_SCAN_ASYNC is not set
@@ -874,7 +874,6 @@ CONFIG_SCSI_LOWLEVEL=y
 # CONFIG_SCSI_INIA100 is not set
 # CONFIG_SCSI_STEX is not set
 # CONFIG_SCSI_SYM53C8XX_2 is not set
-# CONFIG_SCSI_IPR is not set
 # CONFIG_SCSI_QLOGIC_1280 is not set
 # CONFIG_SCSI_QLA_FC is not set
 # CONFIG_SCSI_QLA_ISCSI is not set
@@ -943,7 +942,6 @@ CONFIG_WL_ALL_PASSIVE_RUNTIME=y
 CONFIG_DPSTA=m
 CONFIG_EMF=m
 # CONFIG_PLC is not set
-# CONFIG_PROXYARP is not set
 # CONFIG_IFB is not set
 # CONFIG_DUMMY is not set
 # CONFIG_BONDING is not set
@@ -1239,7 +1237,11 @@ CONFIG_FS_MBCACHE=y
 # CONFIG_REISERFS_FS is not set
 # CONFIG_JFS_FS is not set
 CONFIG_FS_POSIX_ACL=y
-# CONFIG_XFS_FS is not set
+CONFIG_XFS_FS=y
+# CONFIG_XFS_QUOTA is not set
+# CONFIG_XFS_POSIX_ACL is not set
+# CONFIG_XFS_RT is not set
+# CONFIG_XFS_DEBUG is not set
 # CONFIG_GFS2_FS is not set
 # CONFIG_OCFS2_FS is not set
 # CONFIG_BTRFS_FS is not set
@@ -1331,6 +1333,7 @@ CONFIG_SQUASHFS_FRAGMENT_CACHE_SIZE=3
 # CONFIG_SYSV_FS is not set
 # CONFIG_UFS_FS is not set
 # CONFIG_NETWORK_FILESYSTEMS is not set
+CONFIG_EXPORTFS=y
 
 #
 # Partition Types
