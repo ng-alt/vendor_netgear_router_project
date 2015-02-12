@@ -114,6 +114,8 @@ distclean:
 install:
 	$(STRIP)  $(SRC_PATH)/build/usr/lib/*.so 
 	install -m 755 $(SRC_PATH)/build/usr/lib/*.so  $(TARGETDIR)/lib/
+	rm  $(TARGETDIR)/lib/libz.so.1
+	ln -s $(TARGETDIR)/lib/libz.so $(TARGETDIR)/lib/libz.so.1
 	cp /projects/hnd/tools/linux/hndtools-arm-linux-2.6.36-uclibc-4.5.3/lib/librt* $(TARGETDIR)/lib
 
 
