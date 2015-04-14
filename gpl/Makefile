@@ -23,6 +23,7 @@ SUBDIRS :=
 SUBDIRS2 := minidlna
 SUBDIRS3 := timemachine
 
+SUBDIRS += curl
 ifeq ($(CONFIG_TIMEMACHINE),y)
 SUBDIRS += timemachine
 endif
