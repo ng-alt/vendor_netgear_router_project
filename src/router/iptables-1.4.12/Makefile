@@ -37,7 +37,7 @@ endif
 
 
 .PHONY: all
-all: clean iptables
+all: iptables
 
 .PHONY: configure
 ifeq ($(LINUX_VERSION),2_6_36)
@@ -51,7 +51,7 @@ configure:
 	    --build=`/bin/arch`-linux \
 	    --with-kernel=$(KERNEL_DIR) \
 	    --prefix=$(HERE)/$(IPTABLES_SRC)/install \
-	)
+	    PKG_CONFIG=/bin/false)
 else # disable ipv6
 configure:
 	[ -f $(IPTABLES_SRC)/Makefile ] || \
@@ -63,7 +63,7 @@ configure:
 	    --with-kernel=$(KERNEL_DIR) \
 	    --prefix=$(HERE)/$(IPTABLES_SRC)/install \
 	    --disable-ipv6 \
-	)
+	    PKG_CONFIG=/bin/false)
 endif
 endif # linux-2.6.36
 

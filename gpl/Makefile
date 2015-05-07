@@ -20,7 +20,20 @@ include config.in
 #
 
 SUBDIRS := 
+SUBDIRS2 := minidlna
+SUBDIRS3 := timemachine
 
+SUBDIRS += curl
+
+#SUBDIRS += lua
+#SUBDIRS += lsync
+#SUBDIRS += libxml2-2.7.2
+#SUBDIRS += gsoap
+#SUBDIRS += libpng
+
+ifeq ($(CONFIG_TIMEMACHINE),y)
+SUBDIRS += timemachine
+endif
 #SUBDIRS += dnsmasq
 SUBDIRS += dnsmasq-2.15
 SUBDIRS += udhcpd
@@ -28,6 +41,19 @@ SUBDIRS += udhcpd
 SUBDIRS += ppp-2.4.4/pppd pppoecd
 SUBDIRS += ntpclient
 SUBDIRS += bzip2
+
+#SUBDIRS +=openssl
+#SUBDIRS +=lzo-2.06
+ifeq ($(CONFIG_OPENVPN),y)
+SUBDIRS +=openvpn-2.3.1
+#SUBDIRS +=GeoIP-1.5.1
+endif
+# allenwen add for openvpn
+
+ifeq ($(CONFIG_TCPDUMP),y)
+SUBDIRS +=libpcap-1.4.0
+SUBDIRS +=tcpdump-4.4.0
+endif
 
 ifeq ($(CONFIG_RIP),y)
 SUBDIRS	+= zebra
@@ -51,12 +77,24 @@ ifeq ($(CONFIG_DLNA),y)
 SUBDIRS += minidlna
 endif
 
+ifeq ($(CONFIG_ISERVER),y)
+SUBDIRS += iserver
+endif
+
+
 SUBDIRS += zeroconf-0.9
+
+ifeq ($(IPERF_ENABLE_FLAG),y)
+SUBDIRS	+= iperf-2.0.5
+endif
 
 #water, 10/30/2008, @samba
 ifeq ($(SAMBA_ENABLE_FLAG),y)
-SUBDIRS	+= samba-3.0.13
+#SUBDIRS	+= samba-3.0.13
+SUBDIRS	+= samba-3.0.25b
 SUBDIRS	+= bftpd-1.6.6
+SUBDIRS	+= hdparm-9.43
+SUBDIRS	+= hd-idle-1.04
 endif
 
 # pling added 05/04/2009, for NTFS-3g
@@ -67,31 +105,103 @@ endif
 ifeq ($(CONFIG_MTOOLS),y)
 SUBDIRS += mtools-4.0.10
 endif
-
+#Foxconn add start, stanley, 01/16/2010 @IGMP
 ifeq ($(CONFIG_IGMP_PROXY),y)
 SUBDIRS	+= IGMP-PROXY
 endif
-
+#Foxconn add end, stanley, 01/16/2010 @IGMP
 SUBDIRS += iproute2
 
+# Foxconn add start by Hank for ecosystem support 08/14/2012 
 ifeq ($(CONFIG_WGET),y)
 OPENSSL_DIR = $(GPLTOPDIR)/openssl
 WGET_DIR = wget-1.12
 SUBDIRS += $(WGET_DIR)
 endif
 
-all: ECOSYSTEM
+# Foxconn Perry added start, for zip and unzip 2013/05/09
+SUBDIRS += zip30 unzip60
+# Foxconn Perry added, 11/19/2014, for Facebook WiFi debug
+ifeq ($(CONFIG_FBWIFI_DEBUG),y)
+SUBDIRS += ncftp-3.2.5
+endif
+
+
+all: ECOSYSTEM config
 	for i in ${SUBDIRS}; do \
+		(cd $$i; make) || exit 1; \
+	done
+
+tm: 
+	for i in ${SUBDIRS3}; do \
+		(cd $$i; make ; make install) || exit 1; \
+	done
+
+dlna: 
+	for i in ${SUBDIRS2}; do \
 		(cd $$i; make) || exit 1; \
 	done
 
 ECOSYSTEM:
 ifeq ($(CONFIG_WGET),y)
-	mkdir -p $(OPENSSL_DIR)/lib && cp $(OPENSSL_DIR)/libssl.so $(OPENSSL_DIR)/lib/
+	mkdir -p $(OPENSSL_DIR)/lib && rm -rf $(OPENSSL_DIR)/lib/libssl.so.1.0.0 && cp $(TOOLCHAIN)/usr/lib/libssl.so.1.0.0 $(OPENSSL_DIR)/lib/
 	cd $(WGET_DIR) && $(CONFIGURE) CFLAGS="$(CFLAGS) -DMB_CUR_MAX=1" LDFLAGS="$(LDFLAGS) -L$(OPENSSL_DIR)" \
 		--with-ssl=openssl --with-libssl-prefix=$(OPENSSL_DIR) --prefix=$(TARGETDIR)
-endif	
+endif
+	# Foxconn add end by Hank for ecosystem support 08/14/2012	
 
+config: GeoIP_config openvpn_config tcpdump_config iperf_config
+
+libpcap_config:
+	if [ ! -f ./libpcap-1.4.0/Makefile ];then \
+        cd libpcap-1.4.0 && (CC=$(CROSS_COMPILE)gcc CFLAGS="$(CFLAGS)" \
+	$(CONFIGURE) --with-pcap=linux --prefix=$(SRCBASE)/../ap/gpl/libpcap-1.4.0/lib); \
+        fi
+
+libpcap_make: libpcap_config
+	cd libpcap-1.4.0 && make install
+
+tcpdump_config: libpcap_make
+	if [ ! -f ./tcpdump-4.4.0/Makefile ];then \
+        cd tcpdump-4.4.0 && (CC=$(CROSS_COMPILE)gcc CFLAGS="$(CFLAGS)" \
+        $(CONFIGURE) ac_cv_linux_vers=2 --prefix=$(TARGETDIR)/usr); \
+        fi
+
+GeoIP_config:
+	if [ ! -f ./GeoIP-1.5.1/Makefile ];then \
+	cd GeoIP-1.5.1 && (CC=$(CROSS_COMPILE)gcc \
+	ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes CFLAGS="$(CFLAGS)" \
+	$(CONFIGURE) --with-gnu-ld --prefix=$(TARGETDIR)/usr); \
+	fi
+
+lzo_config:
+	if [ ! -f ./lzo-2.06/Makefile ];then \
+	cd lzo-2.06 && (CC=$(CROSS_COMPILE)gcc CFLAGS="$(CFLAGS)" \
+	$(CONFIGURE) --prefix=$(TARGETDIR)/usr/local); \
+	fi
+
+lzo_make: lzo_config
+	cd lzo-2.06 && make install
+
+openvpn_config: lzo_make
+	if [ ! -f ./openvpn-2.3.1/Makefile ];then \
+	cd openvpn-2.3.1 && (CC=$(CROSS_COMPILE)gcc LZO_CFLAGS=-I$(TARGETDIR)/usr/local/include \
+	LZO_LIBS="-L$(TARGETDIR)/usr/local/lib -llzo2" \
+	CFLAGS="$(CFLAGS) -I$(SRCBASE)/../ap/acos/include" \
+	LDFLAGS="-L$(ROUTERDIR)/nvram -L$(INSTALLDIR)/nvram/usr/lib -lnvram" \
+	$(CONFIGURE) --prefix=$(TARGETDIR)/usr/local --disable-pam-dlopen \
+	--disable-plugin-auth-pam); \
+	fi 
+
+iperf_config:
+	if [ ! -f ./iperf-2.0.5/Makefile ];then \
+	cd iperf-2.0.5 && (CC=$(CROSS_COMPILE)gcc \
+	CFLAGS="$(CFLAGS) -I$(SRCBASE)/../ap/acos/include" \
+	LDFLAGS="-L$(ROUTERDIR)/nvram -L$(INSTALLDIR)/nvram/usr/lib -lnvram" \
+	$(CONFIGURE) --prefix=$(TARGETDIR)/usr --disable-pam-dlopen \
+	--disable-plugin-auth-pam); \
+	fi
+ 
 install:
 	for i in ${SUBDIRS}; do \
 		(cd $$i; make install) || exit 1; \
