@@ -12,7 +12,7 @@ echo creating dir on /tmp
 #mkdir /tmp/var_cache
 
 test -z "/tmp/avahi" || mkdir "/tmp/avahi"
-cp -f /usr/etc/avahi-daemon.conf /tmp/avahi/avahi-daemon.conf
+cp -f /usr/etc/avahi/avahi-daemon.conf /tmp/avahi/avahi-daemon.conf
 cp -f  /etc/system.conf /tmp/system.conf
 test -z "/tmp/system.d" || mkdir "/tmp/system.d"
 cp -f  /etc/avahi-dbus.conf /tmp/system.d/avahi-dbus.conf

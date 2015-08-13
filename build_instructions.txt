@@ -1,8 +1,8 @@
 =======================================
- R7000 Firmware Build Instructions
+ R8500 Firmware Build Instructions
 
  Version: 1.0
- Date   : 2015/02/05
+ Date   : 2015/08/13
 ======================================== 
 
 Note: 
@@ -27,16 +27,16 @@ Note:
  Build code
 ===================
 
-1. Put the file "R7000-V1.0.4.18_1.1.52_src.tar.zip" into a directory of your choice.
+1. Put the file "R8500-V1.0.0.20_1.0.11_src.tar.zip" into a directory of your choice.
    Unzip and untar it with the following command:
-        unzip R7000-V1.0.4.18_1.1.52_src.tar.zip
-        tar xvf R7000-V1.0.4.18_1.1.52_src.tar
+        unzip R8500-V1.0.0.20_1.0.11_src.tar.zip
+        tar xvf R8500-V1.0.0.20_1.0.11_src.tar
 
 2. Run the following commands to build image
-        cd R7000-V1.0.4.18_1.1.52_src/src/router/
-        make PROFILE=R7000 FW_TYPE=WW ARCH=arm PLT=arm LINUX_VERSION=2_6_36
-	make install PROFILE=R7000 FW_TYPE=WW ARCH=arm PLT=arm LINUX_VERSION=2_6_36
+        cd R8500-V1.0.0.20_1.0.11_src/src/router/
+        make PROFILE=R7800 FW_TYPE=WW ARCH=arm PLT=arm LINUX_VERSION=2_6_36
+        make install PROFILE=R7800 FW_TYPE=WW ARCH=arm PLT=arm LINUX_VERSION=2_6_36
 
-3. The final image is "R7000-V1.0.4.18_1.1.52_src/src/router/arm-uclibc/kernel_image.chk".
-   User may upgrade to this image using the R7000 GUI "Router Upgrade" page.
+3. The final image is "R8500-V1.0.0.20_1.0.11_src/src/router/arm-uclibc/kernel_image.chk".
+   User may upgrade to this image using the R8500 GUI "Router Upgrade" page.
 

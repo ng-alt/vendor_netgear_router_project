@@ -1,31 +1,37 @@
 include ../config.mk
 
-ifneq ($(CONFIG_ISERVER),y)
-SUBDIRS += gdbm-1.8.3
-SUBDIRS += expat-2.0.1
-SUBDIRS += libdaemon-0.14
-SUBDIRS += libiconv-1.11
-#SUBDIRS += gettext-0.17
-endif
-SUBDIRS += libgpg-error-1.10
+SUBDIRS1 += gdbm-1.8.3
+SUBDIRS1 += expat-2.0.1
+SUBDIRS1 += libdaemon-0.14
+SUBDIRS1 += libiconv-1.11
+#SUBDIRS1 += gettext-0.17
+SUBDIRS1 += libxml2-2.7.2
+SUBDIRS1 += avahi-0.6.25
+
+SUBDIRS2 += libgpg-error-1.10
+SUBDIRS2 += libgcrypt-1.5.0
+SUBDIRS2 += zlib-1.2.3
+SUBDIRS2 += db-4.7.25.NC/build_unix
+SUBDIRS2 += openssl-0.9.8e
+SUBDIRS2 += netatalk-utility
+SUBDIRS2 += netatalk-2.2.5
 
 ifneq ($(CONFIG_ISERVER),y)
-SUBDIRS += avahi-0.6.25
+SUBDIRS = $(SUBDIRS1) $(SUBDIRS2)
+else
+SUBDIRS = $(SUBDIRS2)
 endif
-SUBDIRS += libgcrypt-1.5.0
-SUBDIRS += zlib-1.2.3
-SUBDIRS += db-4.7.25.NC/build_unix
-ifneq ($(CONFIG_ISERVER),y)
-SUBDIRS += libxml2-2.7.2
-endif
-SUBDIRS += openssl-0.9.8e
-SUBDIRS += netatalk-utility
-SUBDIRS += netatalk-2.2.5
+
 ifeq ($(ARCH),arm)
 AR = arm-brcm-linux-uclibcgnueabi-ar 
 CC = arm-brcm-linux-uclibcgnueabi-gcc
 RANLIB = arm-brcm-linux-uclibcgnueabi-ranlib
 STRIP = arm-brcm-linux-uclibcgnueabi-strip
+CXX = arm-brcm-linux-uclibcgnueabi-g++
+LD = arm-brcm-linux-uclibcgnueabi-ld
+export BUILD := i386-pc-linux-gnu
+export HOSTCC := gcc
+PLATFORM := $(PLT)-uclibc
 else
 AR =  mipsel-linux-linux26-ar 
 CC =  mipsel-linux-linux26-gcc
@@ -39,29 +45,73 @@ export TIMEMACHINE_PATH
 PKG_INSTALL_DIR=$(TIMEMACHINE_PATH)/build
 export PKG_INSTALL_DIR
 
-PATH := $(PKG_INSTALL_DIR)/usr/lib:$(PATH)
-export PATH
+all: $(SUBDIRS)
+	$(info "===========================")
+	$(info "  Build Time Machine Done  ")
+	$(info "===========================")
 
-PKG_CONFIG_PATH=$(PKG_INSTALL_DIR)/usr/lib/pkgconfig
-export PKG_CONFIG_PATH
-PKG_CONFIG_LIBDIR=$(PKG_INSTALL_DIR)/usr/lib/pkgconfig
-export PKG_CONFIG_LIBDIR
+gettext-0.17:
+	$(info build $@)
+	test -s $@/Makefile || ( cd $@ && ./configure --prefix=$(PKG_INSTALL_DIR)/usr --build=$(BUILD) --target=$(PLATFORM)-linux --host=$(PLATFORM)-linux CFLAGS="-U_FORTIFY_SOURCE" CXX=${CXX} LD=${LD} CC=${CC} AR=${AR} RANLIB=${RANLIB} STRIP=${STRIP} --disable-nls --disable-java --disable-native-java --disable-rpath && cd .. ); \
+	(cd $@; make all install install-strip) || exit 1;
 
-DESTDIR = $(PKG_INSTALL_DIR)
-export DESTDIR
+#openssl-0.9.8e,zlib-1.2.3 netatalk-utility Makefile still keep hardcode
+openssl-0.9.8e zlib-1.2.3 netatalk-utility:
+	cd $@; touch Makefile; make CC=${CC} AR=${AR} RANLIB=${RANLIB} STRIP=${STRIP} all install
 
-LDFLAGS += -L$(PKG_INSTALL_DIR)/usr/lib
-CFLAGS += -I$(PKG_INSTALL_DIR)/usr/include
+libiconv-1.11:
+	$(info build $@)
+	test -s $@/Makefile || ( cd $@ && ./configure --prefix=$(PKG_INSTALL_DIR)/usr --host=$(BUILD) CC=${CC} AR=${AR} RANLIB=${RANLIB} STRIP=${STRIP} --with-distro=none && cd .. ); \
+	(cd $@; make all install; $(STRIP) $(PKG_INSTALL_DIR)/usr/lib/libiconv.so.2.4.0) || exit 1;
 
-export LDFLAGS
-export CFLAGS
+gdbm-1.8.3:
+	$(info build $@)
+	test -s $@/Makefile || ( cd $@ && ./configure --prefix=$(PKG_INSTALL_DIR)/usr --build=$(BUILD) --target=$(PLATFORM)-linux --host=$(PLATFORM)-linux --enable-shared --enable-static CC=${CC} AR=${AR} RANLIB=${RANLIB} STRIP=${STRIP} && cd .. ); \
+	(cd $@; make all install; $(STRIP) $(PKG_INSTALL_DIR)/usr/lib/libgdbm.so.3.0.0) || exit 1;
+
+libxml2-2.7.2:
+	$(info build $@)
+	test -s $@/Makefile || ( cd $@ && ./configure --prefix=$(PKG_INSTALL_DIR)/usr --build=$(BUILD) --target=$(PLATFORM)-linux --host=$(PLATFORM)-linux CC=${CC} AR=${AR} RANLIB=${RANLIB} STRIP=${STRIP} --without-python --disable-dependency-tracking && cd .. ); \
+	(cd $@; make all install install-strip) || exit 1;
+
+db-4.7.25.NC/build_unix:
+	$(info build $@)
+	test -s $@/Makefile || ( cd $@ && ../dist/configure --prefix=$(PKG_INSTALL_DIR)/usr --build=$(BUILD) --target=$(PLATFORM)-linux --host=$(PLATFORM)-linux CC=${CC} AR=${AR} RANLIB=${RANLIB} STRIP=${STRIP} --disable-java --disable-cxx --with-mutex=UNIX/fcntl --disable-tcl --disable-rpc --enable-compat185 --enable-statistics --enable-replication --enable-cryptography && cd .. ); \
+	(cd $@; make all install_include install_lib install_utilities) || exit 1;
+
+libdaemon-0.14:
+	$(info build $@)
+	test -s $@/Makefile || ( cd $@ && ./configure --prefix=$(PKG_INSTALL_DIR)/usr --with-distro=none ac_cv_func_setpgrp_void=yes \
+	--disable-dependency-tracking --build=$(BUILD) --target=$(PLATFORM)-linux --host=$(PLATFORM)-linux CC=${CC} AR=${AR} RANLIB=${RANLIB} STRIP=${STRIP} && cd .. ); \
+	(cd $@; make all install install-strip) || exit 1;
+
+expat-2.0.1:
+	$(info build $@)
+	test -s $@/Makefile || ( cd $@ && ./configure --prefix=$(PKG_INSTALL_DIR)/usr --with-distro=none --build=$(BUILD) --target=$(PLATFORM)-linux --host=$(PLATFORM)-linux CXX=${CXX} LD=${LD} CC=${CC} AR=${AR} RANLIB=${RANLIB} STRIP=${STRIP} && cd .. ); \
+	(cd $@; make buildlib installlib; $(STRIP) $(PKG_INSTALL_DIR)/usr/lib/libexpat.so.1.5.2) || exit 1;
+
+libgpg-error-1.10:
+	$(info build $@)
+	test -s $@/Makefile || ( cd $@ && ./configure --prefix=$(PKG_INSTALL_DIR)/usr --with-distro=none --build=$(BUILD) --target=$(PLATFORM)-linux --host=$(PLATFORM)-linux CC=${CC} AR=${AR} RANLIB=${RANLIB} STRIP=${STRIP} && cd .. ); \
+	(cd $@; make all install install-strip) || exit 1;
+
+libgcrypt-1.5.0: libgpg-error-1.10
+	$(info build $@)
+	test -s $@/Makefile || ( cd $@ && ./configure --prefix=$(PKG_INSTALL_DIR)/usr --with-gpg-error-prefix=$(PKG_INSTALL_DIR)/usr LDFLAGS="-L$(PKG_INSTALL_DIR)/usr/lib" CFLAGS="-I$(PKG_INSTALL_DIR)/usr/include" --build=$(BUILD) --target=$(PLATFORM)-linux --host=$(PLATFORM)-linux --disable-asm --enable-digests="md5 rmd160 sha1 sha256 sha512" --enable-ciphers="arcfour des aes cast5" --enable-pubkey-ciphers="rsa dsa" CC=${CC} AR=${AR} RANLIB=${RANLIB} STRIP=${STRIP} && cd .. ); \
+	(cd $@; make all install install-strip) || exit 1;
+
+avahi-0.6.25: expat-2.0.1 libdaemon-0.14
+	$(info ACLOCAL_PATH=$(ACLOCAL_PATH))
+	$(info build $@)
+	test -s $@/Makefile || ( cd $@ && ./configure --prefix=$(PKG_INSTALL_DIR)/usr --build=$(BUILD) --target=$(PLATFORM)-linux --host=$(PLATFORM)-linux LDFLAGS="-L$(PKG_INSTALL_DIR)/usr/lib" CFLAGS="-DGETTEXT_PACKAGE -I$(PKG_INSTALL_DIR)/usr/include" LIBDAEMON_LIBS="-L$(PKG_INSTALL_DIR)/usr/lib -ldaemon" LIBDAEMON_CFLAGS="-I$(PKG_INSTALL_DIR)/usr/include" --localstatedir="/var" --disable-glib --disable-gobject --disable-qt3 --disable-qt4 --disable-gtk --disable-dbus --with-xml=expat --disable-dbm --enable-gdbm --enable-libdaemon --disable-python --disable-pygtk --disable-python-dbus --disable-mono --disable-monodoc --disable-doxygen-doc --disable-doxygen-dot --disable-doxygen-xml --disable-doxygen-html --disable-manpages --disable-xmltoman --with-distro=archlinux --with-avahi-user=root --with-avahi-group=root --with-autoipd-user=root --with-autoipd-group=root --disable-stack-protector CC=${CC} AR=${AR} RANLIB=${RANLIB} STRIP=${STRIP} && cd .. ); \
+	(cd $@; make all install install-strip) || exit 1;
+
+netatalk-2.2.5:
+	$(info build $@)
+	test -s $@/Makefile || ( cd $@ && ./configure --prefix=$(PKG_INSTALL_DIR)/usr --program-prefix= --build=$(BUILD) --target=$(PLATFORM)-linux --host=$(PLATFORM)-linux CC=${CC} AR=${AR} RANLIB=${RANLIB} STRIP=${STRIP} --with-bdb=$(PKG_INSTALL_DIR)/usr --with-ssl-dir=$(TIMEMACHINE_PATH)/openssl-0.9.8e --with-libgcrypt-dir=$(TIMEMACHINE_PATH)/libgcrypt-1.5.0 CFLAGS="-std=gnu99" && cd .. ); \
+	(cd $@; make all install install-strip) || exit 1;
 
 
-all: 
-	for i in ${SUBDIRS}; do \
-		(cd $$i; make all install) || exit 1; \
-	done
-	
 install:
 #	install -m 755 $(PKG_INSTALL_DIR)/usr/lib/libintl.so.* $(TARGETDIR)/usr/lib/
 	install -d -m0755 $(TARGETDIR)/etc/avahi	
@@ -138,3 +188,23 @@ clean:
 	for i in ${SUBDIRS}; do \
 		(cd $$i; make clean); \
 	done
+	rm -rf build/*
+
+distclean:
+	cd ./netatalk-utility/ && make clean
+	cd ./openssl-0.9.8e/ && make clean 
+	cd ./zlib-1.2.3/ && make clean
+	cd ./libiconv-1.11/ && make distclean
+#	cd ./gettext-0.17/ && make distclean
+	cd ./gdbm-1.8.3/ && make distclean
+	cd ./libxml2-2.7.2/ && make distclean
+	cd ./db-4.7.25.NC/build_unix/ && make distclean
+	cd ./libdaemon-0.14/ && make distclean
+	cd ./expat-2.0.1/ && make distclean
+	cd ./libgpg-error-1.10/ && make distclean
+	cd ./libgcrypt-1.5.0/ && make distclean
+	cd ./avahi-0.6.25/ && make distclean
+	cd ./netatalk-2.2.5/ && make distclean
+	rm -rf build/*
+
+.PHONY: $(SUBDIRS1) $(SUBDIRS2)

@@ -24,13 +24,6 @@ SUBDIRS2 := minidlna
 SUBDIRS3 := timemachine
 
 SUBDIRS += curl
-
-SUBDIRS += lua
-#SUBDIRS += lsync
-SUBDIRS += libxml2-2.7.2
-SUBDIRS += gsoap
-SUBDIRS += libpng
-
 ifeq ($(CONFIG_TIMEMACHINE),y)
 SUBDIRS += timemachine
 endif
@@ -113,21 +106,27 @@ endif
 SUBDIRS += iproute2
 
 # Foxconn add start by Hank for ecosystem support 08/14/2012 
+ifeq ($(CONFIG_DOWNLOADER),y)
+SUBDIRS +=transmission
+SUBDIRS +=amule
+endif
 ifeq ($(CONFIG_WGET),y)
 OPENSSL_DIR = $(GPLTOPDIR)/openssl
 WGET_DIR = wget-1.12
 SUBDIRS += $(WGET_DIR)
 endif
+# Foxconn add start, Snoopy.wu, KWILT support, 06/01/2015
+ifeq ($(CONFIG_KWILT),y)
+SUBDIRS += netkit-ftp-0.18-pre1
+endif
+# Foxconn add end, Snoopy.wu, 06/01/2015
+
 
 # Foxconn Perry added start, for zip and unzip 2013/05/09
 SUBDIRS += zip30 unzip60
-# Foxconn Perry added, 11/19/2014, for Facebook WiFi debug
-ifeq ($(CONFIG_FBWIFI_DEBUG),y)
-SUBDIRS += ncftp-3.2.5
-endif
 
 
-all: ECOSYSTEM config
+all: ECOSYSTEM config dhcp6c dhcp6s
 	for i in ${SUBDIRS}; do \
 		(cd $$i; make) || exit 1; \
 	done
@@ -202,12 +201,27 @@ iperf_config:
 	--disable-plugin-auth-pam); \
 	fi
  
-install:
+dhcp6s dhcp6c:
+	[ ! -d dhcp6 ] || [ -f dhcp6/Makefile ] || ( cd dhcp6 &&(CC=gcc CFLAGS+="-I../../../src/router/shared" ./configure)&& cd .. )
+	[ ! -d dhcp6 ] || $(MAKE) -C dhcp6 CC=$(CROSS_COMPILE)gcc LIBS="-L ../../../src/router/lib" $@
+
+dhcp6s-install:
+	[ ! -d dhcp6 ] || install -D -m 755 dhcp6/dhcp6s $(TARGETDIR)/usr/sbin/dhcp6s
+	[ ! -d dhcp6 ] || $(STRIP) $(TARGETDIR)/usr/sbin/dhcp6s
+
+dhcp6c-install:
+	[ ! -d dhcp6 ] || install -D -m 755 dhcp6/dhcp6c $(TARGETDIR)/usr/sbin/dhcp6c
+	[ ! -d dhcp6 ] || $(STRIP) $(TARGETDIR)/usr/sbin/dhcp6c
+
+dhcp6s-clean dhcp6c-clean:
+	[ ! -f dhcp6/Makefile ] || $(MAKE) -C dhcp6 distclean
+
+install: dhcp6s-install dhcp6c-install
 	for i in ${SUBDIRS}; do \
 		(cd $$i; make install) || exit 1; \
 	done
 	
-clean:
+clean: dhcp6c-clean
 	for i in ${SUBDIRS}; do \
 		(cd $$i; make clean); \
 	done

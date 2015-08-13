@@ -15,8 +15,7 @@ CONFIG_OPENDNS=y
 CONFIG_DLNA=y
 CONFIG_IPERF=y
 CONFIG_OPENSSL=y
-INCLUDE_FBWIFI_FLAG=n
-CONFIG_FBWIFI_DEBUG=n
+INCLUDE_FBWIFI_FLAG=y
 
 #Foxconn added start, Wins, 06/01/2011, @auto_check_bandwidth
 CONFIG_QOS_AUTO_CHECK_BW=n
@@ -27,12 +26,16 @@ CONFIG_WPS_V20=y
 #Foxconn added end, Wins, 06/22/2011, @WPS v2.0
 
 #Foxconn added start, Wins, 07/15/2011, @5G_auto_channel
-CONFIG_5G_AUTO_CHANNEL=y
+CONFIG_5G_AUTO_CHANNEL=n
 #Foxconn added end, Wins, 07/15/2011, @5G_auto_channel
 
 #Foxconn Perry added start, 2012/04/02, for access control
 CONFIG_ACCESSCONTROL=y
+
+CONFIG_GPIO_LED_SWITCH=y
 #Foxconn Perry added end, 2012/04/02, for access control
+
+CONFIG_DEBUG_BUTTOND=y
 
 # CONFIG_NAT is not set
 
@@ -67,6 +70,8 @@ CONFIG_DHCPV6C=y
 CONFIG_UCLIBC=y
 CONFIG_LIBOPT=y
 CONFIG_USBAP=y
+CONFIG_GMAC3=y
+CONFIG_DHDAP=y
 CONFIG_SQUASHFS=y
 # CONFIG_CRAMFS is not set
 
@@ -80,13 +85,14 @@ CONFIG_LIBUPNP=y
 # CONFIG_SAMBA is not set
 # CONFIG_FFMPEG is not set
 CONFIG_TASKSET=y
+CONFIG_MPSTAT=y
 
 #
 # DLNA
 #
 # CONFIG_DLNA_DMS is not set
 # CONFIG_DLNA_DMR is not set
-# CONFIG_MFP is not set
+CONFIG_MFP=y
 # CONFIG_HSPOT is not set
 # CONFIG_NPS is not set
 CONFIG_NAS=y
@@ -105,6 +111,7 @@ CONFIG_UTILS=y
 CONFIG_BCMWPA2=y
 # CONFIG_WCN is not set
 CONFIG_EMF=y
+CONFIG_WLEXE=y
 # CONFIG_WL_ACI is not set
 CONFIG_TRAFFIC_MGMT_RSSI_POLICY=y
 CONFIG_PHYMON_UTILITY=y
@@ -113,6 +120,7 @@ CONFIG_BCMDCS=y
 CONFIG_EXTACS=y
 CONFIG_BCMBSD=y
 # CONFIG_PLC is not set
+CONFIG_TREND_IQOS=y
 CONFIG_IPV6=y
 # CONFIG_IPROUTE2 is not set
 CONFIG_DHCPV6S=y

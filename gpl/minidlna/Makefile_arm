@@ -35,13 +35,8 @@ CFLAGS += -Os
 
 # [FIXME] added by Michael Jiang.
 # The below variables  should be modified when you use different platform.
-ifeq ($(CONFIG_XDSL_PRODUCT),y)
-HOST=mips-linux-linux26
-HOST_COMPILE=$(HOST)-
-else
 HOST=arm-linux
 HOST_COMPILE=$(HOST)-
-endif
 #CROSS_COMPILE=mipsel-linux-uclibc-
 #HOST_COMPILE=mipsel-linux-linux26-
 #CROSS=mipsel-linux-uclibc
@@ -62,21 +57,9 @@ all: zlib libogg libexif sqlite3 libvorbis flac libid3tag ffmpeg jpeg
 	cp ./minidlna-1.0.26/minidlna	./lib/minidlna.exe
 	#make install
 
-
-ifeq ($(CONFIG_XDSL_PRODUCT),y)
-zlib_config:
+zlib:
 	# compile zlib first, bcz. libid3tag needs it for configuration.
 	cd zlib-1.2.8 &&  (./configure --sharedlibdir=../lib);
-
-zlib: zlib_config
-	# compile zlib first, bcz. libid3tag needs it for configuration.
-	cd zlib-1.2.8 &&  make
-else
-zlib: 
-	# compile zlib first, bcz. libid3tag needs it for configuration.
-	cd zlib-1.2.8 &&  (./configure --sharedlibdir=../lib);
-endif
-
 
 libogg:
 	if [ ! -f ./libogg-1.1.4/Makefile ];then \
@@ -116,26 +99,18 @@ libid3tag:
 				LDFLAGS=-L$(MINI_DLNA_PATH)/zlib-1.2.8/ \
 				); \
 	fi
-
-ifeq ($(CONFIG_XDSL_PRODUCT),y)
-ffmpeg:
-	cd ffmpeg-2.3.4 && (./configure --enable-shared --enable-gpl --arch=mips \
-				--cc=$(CROSS_COMPILE)gcc --enable-cross-compile \
-				--disable-muxers --disable-encoders --disable-filters --arch=mips --target_os=linux \
-				--extra-cflags=-fPIC \
-				);
-else
+	
 ffmpeg:
 	cd ffmpeg-2.3.4 && (./configure --enable-shared --enable-gpl --arch=arm \
 				--cc=arm-brcm-linux-uclibcgnueabi-gcc --enable-cross-compile \
 				--disable-muxers --disable-encoders --disable-filters --arch=arm --target_os=linux \
 				--extra-cflags=-fPIC \
 				);
-endif
 				
 jpeg:
-	cd jpeg-7 && (./configure --host=$(HOST)  CC=$(CROSS_COMPILE)gcc ); 
-				
+	cd jpeg-7 && (./configure --host=$(HOST)  CC=$(CROSS_COMPILE)gcc \
+				); \
+
 clean:
 	for i in ${SUBDIRS}; do \
 		(cd $$i; make clean); \
@@ -154,31 +129,19 @@ clean:
 	rm ./lib/libjpeg.so.7
 	rm ./lib/libid3tag.so.0
 	rm ./lib/minidlna.exe
-	rm -f ./lib/*.so
-copy:
+copy: 
 	cp ./zlib-1.2.8/libz.so.1.2.8				./lib/libz.so.1 && \
-	cp ./zlib-1.2.8/libz.so.1.2.8				./lib/libz.so && \
 	cp ./libvorbis-1.2.3/lib/.libs/libvorbis.so.0.4.3	./lib/libvorbis.so.0 && \
-	cp ./libvorbis-1.2.3/lib/.libs/libvorbis.so.0.4.3	./lib/libvorbis.so && \
 	cp ./flac-1.2.1/src/libFLAC/.libs/libFLAC.so.8.2.0	./lib/libFLAC.so.8 && \
-	cp ./flac-1.2.1/src/libFLAC/.libs/libFLAC.so.8.2.0	./lib/libFLAC.so && \
 	cp ./libexif-0.6.19/libexif/.libs/libexif.so.12.3.1 	./lib/libexif.so.12  && \
-	cp ./libexif-0.6.19/libexif/.libs/libexif.so.12.3.1 	./lib/libexif.so  && \
 	cp ./libogg-1.1.4/src/.libs/libogg.so.0.6.0		./lib/libogg.so.0 && \
-	cp ./libogg-1.1.4/src/.libs/libogg.so.0.6.0		./lib/libogg.so && \
 	cp ./ffmpeg-2.3.4/libavutil/libavutil.so.52		./lib/libavutil.so.52 && \
 	cp ./ffmpeg-2.3.4/libavdevice/libavdevice.so.55		./lib/libavdevice.so.55 && \
 	cp ./ffmpeg-2.3.4/libavformat/libavformat.so.55		./lib/libavformat.so.55 && \
 	cp ./ffmpeg-2.3.4/libavcodec/libavcodec.so.55		./lib/libavcodec.so.55 && \
 	cp ./ffmpeg-2.3.4/libswresample/libswresample.so.0	./lib/libswresample.so.0 && \
-	cp ./ffmpeg-2.3.4/libavutil/libavutil.so.52		./lib/libavutil.so && \
-	cp ./ffmpeg-2.3.4/libavdevice/libavdevice.so.55		./lib/libavdevice.so && \
-	cp ./ffmpeg-2.3.4/libavformat/libavformat.so.55		./lib/libavformat.so && \
-	cp ./ffmpeg-2.3.4/libavcodec/libavcodec.so.55		./lib/libavcodec.so && \
 	cp ./sqlite-3.6.22/.libs/libsqlite3.so.0.8.6 		./lib/libsqlite3.so.0 && \
-	cp ./sqlite-3.6.22/.libs/libsqlite3.so.0.8.6 		./lib/libsqlite3.so && \
 	cp ./jpeg-7/.libs/libjpeg.so.7.0.0			./lib/libjpeg.so.7 && \
-	cp ./jpeg-7/.libs/libjpeg.so.7.0.0			./lib/libjpeg.so && \
 	cp ./libid3tag-0.15.0b/.libs/libid3tag.so.0.2.0 	./lib/libid3tag.so.0
 
 distclean:
