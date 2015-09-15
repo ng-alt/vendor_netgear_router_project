@@ -2,12 +2,12 @@
  R8500 Firmware Build Instructions
 
  Version: 1.0
- Date   : 2015/08/13
+ Date   : 2015/09/15
 ======================================== 
 
 Note: 
-      This package has been built successfully on 32-bit i386 Fedora 6 Linux 
-      host machine. Compiling this package on platforms other than Fedora Core 6
+      This package has been built successfully on 32-bit i386 Fedora 10 Linux 
+      host machine. Compiling this package on platforms other than Fedora Core 10
       may have unexpected results.
 
 ===================
@@ -27,16 +27,16 @@ Note:
  Build code
 ===================
 
-1. Put the file "R8500-V1.0.0.20_1.0.11_src.tar.zip" into a directory of your choice.
+1. Put the file "R8500-V1.0.0.28_1.0.15_src.tar.zip" into a directory of your choice.
    Unzip and untar it with the following command:
-        unzip R8500-V1.0.0.20_1.0.11_src.tar.zip
-        tar xvf R8500-V1.0.0.20_1.0.11_src.tar
+        unzip R8500-V1.0.0.28_1.0.15_src.tar.zip
+        tar xvf R8500-V1.0.0.28_1.0.15_src.tar
 
 2. Run the following commands to build image
-        cd R8500-V1.0.0.20_1.0.11_src/src/router/
+        cd R8500-V1.0.0.28_1.0.15_src/src/router/
         make PROFILE=R7800 FW_TYPE=WW ARCH=arm PLT=arm LINUX_VERSION=2_6_36
         make install PROFILE=R7800 FW_TYPE=WW ARCH=arm PLT=arm LINUX_VERSION=2_6_36
 
-3. The final image is "R8500-V1.0.0.20_1.0.11_src/src/router/arm-uclibc/kernel_image.chk".
+3. The final image is "R8500-V1.0.0.28_1.0.15_src/src/router/arm-uclibc/kernel_image.chk".
    User may upgrade to this image using the R8500 GUI "Router Upgrade" page.
 
