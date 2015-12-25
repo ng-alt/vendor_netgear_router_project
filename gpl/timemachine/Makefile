@@ -108,7 +108,7 @@ avahi-0.6.25: expat-2.0.1 libdaemon-0.14
 
 netatalk-2.2.5:
 	$(info build $@)
-	test -s $@/Makefile || ( cd $@ && ./configure --prefix=$(PKG_INSTALL_DIR)/usr --program-prefix= --build=$(BUILD) --target=$(PLATFORM)-linux --host=$(PLATFORM)-linux CC=${CC} AR=${AR} RANLIB=${RANLIB} STRIP=${STRIP} --with-bdb=$(PKG_INSTALL_DIR)/usr --with-ssl-dir=$(TIMEMACHINE_PATH)/openssl-0.9.8e --with-libgcrypt-dir=$(TIMEMACHINE_PATH)/libgcrypt-1.5.0 CFLAGS="-std=gnu99" && cd .. ); \
+	test -s $@/Makefile || ( cd $@ && ./configure --prefix=$(PKG_INSTALL_DIR)/usr --program-prefix= --build=$(BUILD) --target=$(PLATFORM)-linux --host=$(PLATFORM)-linux CC=${CC} AR=${AR} RANLIB=${RANLIB} STRIP=${STRIP} --with-bdb=$(PKG_INSTALL_DIR)/usr --with-ssl-dir=$(TIMEMACHINE_PATH)/openssl-0.9.8e --with-libgcrypt-dir=$(PKG_INSTALL_DIR)/usr CFLAGS="-std=gnu99" && cd .. ); \
 	(cd $@; make all install install-strip) || exit 1;
 
 
