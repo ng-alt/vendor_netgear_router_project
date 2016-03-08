@@ -188,3 +188,5 @@ CONFIG_VMSTAT=y
 # Advanced Router Features
 #
 CONFIG_BCMQOS=y
+
+CONFIG_BT_IGMP=y

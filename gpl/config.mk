@@ -48,6 +48,7 @@ CONFIG_KWILT=n
 #foxconn Han added, 09/03/2015
 CONFIG_LINK_AGG=y
 CONFIG_PORTTRUNKING_SUPPORT=y
+CONFIG_BT_IGMP=y
 endif
 #Foxconn add end, Snoopy.wu, 05/20/2015
 INCLUDE_IPV6_FLAG=y
