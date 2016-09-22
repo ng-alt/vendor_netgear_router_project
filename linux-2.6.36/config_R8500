@@ -966,14 +966,6 @@ CONFIG_BCM_GMAC3=y
 # CONFIG_BCM57XX is not set
 # CONFIG_WL is not set
 CONFIG_DHDAP=m
-# CONFIG_WAPI is not set
-# CONFIG_WL_USE_AP is not set
-# CONFIG_WL_USE_AP_SDSTD is not set
-# CONFIG_WL_USE_STA is not set
-CONFIG_WL_USE_APSTA=y
-# CONFIG_WL_USE_AP_ONCHIP_G is not set
-# CONFIG_WL_USE_STA_ONCHIP_G is not set
-# CONFIG_WL_USE_APSTA_ONCHIP_G is not set
 # CONFIG_WL_USBAP is not set
 CONFIG_WL_AP="wlconfig_lx_router_ap"
 CONFIG_WL_AP_SDSTD="wlconfig_lx_router_ap_sdstd"
@@ -982,9 +974,6 @@ CONFIG_WL_APSTA="wlconfig_lx_router_apsta"
 CONFIG_WL_AP_ONCHIP_G="wlconfig_lx_router_ap_1chipG"
 CONFIG_WL_STA_ONCHIP_G="wlconfig_lx_router_sta_1chipG"
 CONFIG_WL_HIGH="wlconfig_lx_router_high"
-# CONFIG_WL_ALL_PASSIVE_ON is not set
-CONFIG_WL_ALL_PASSIVE_RUNTIME=y
-CONFIG_DPSTA=m
 CONFIG_LACP=m
 CONFIG_EMF=m
 # CONFIG_IFB is not set
