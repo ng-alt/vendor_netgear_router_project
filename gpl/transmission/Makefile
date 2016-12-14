@@ -21,14 +21,14 @@ CFLAGS += -s -Os -fPIC
 
 CFLAGS += -I$(BT_PATH)/openssl/include
 CFLAGS += -I$(BT_PATH)/zlib-1.2.3
-CFLAGS += -I$(BT_PATH)/../curl-7.23.1/source/include
+CFLAGS += -I$(BT_PATH)/../curl/curl-7.36.0/include
 CFLAGS += -I$(BT_PATH)/libevent-2.0.20-stable/include
 
 LDFLAGS += -static
 LDFLAGS += -L$(TOOLCHAIN)/lib
 LDFLAGS += -L$(BT_PATH)/openssl
 LDFLAGS += -L$(BT_PATH)/zlib-1.2.3
-LDFLAGS += -L$(BT_PATH)/../curl-7.23.1/source/lib/.libs 
+LDFLAGS += -L$(BT_PATH)/../curl/curl-7.36.0/lib/.libs 
 LDFLAGS += -L$(BT_PATH)/libevent-2.0.20-stable/.libs
 
 CONFIGURE ?= ./configure --host=arm-linux --build=i386-pc-linux-gnu
@@ -54,7 +54,7 @@ libevent: curl
 		) && make
     
 curl: zlib openssl
-	cd $(BT_PATH)/../curl-7.23.1/source && echo "ac_cv_file___dev_urandom_=yes" > config.cache && ($(CROSS_COMPILE_ENV)\
+	cd $(BT_PATH)/../curl/curl-7.36.0 && echo "ac_cv_file___dev_urandom_=yes" > config.cache && ($(CROSS_COMPILE_ENV)\
 		CFLAGS="$(CFLAGS)" \
 		LDFLAGS="$(LDFLAGS)" \
 		$(CONFIGURE) -C \

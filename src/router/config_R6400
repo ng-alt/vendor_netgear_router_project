@@ -16,6 +16,7 @@ CONFIG_DLNA=y
 CONFIG_IPERF=y
 CONFIG_OPENSSL=y
 INCLUDE_FBWIFI_FLAG=n
+#Foxconn Perr added, 11/19/2014, for Facebook WiFi debug
 CONFIG_FBWIFI_DEBUG=n
 
 #Foxconn added start, Wins, 06/01/2011, @auto_check_bandwidth
