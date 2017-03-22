@@ -41,27 +41,18 @@ all: libevent
 		OPENSSL_CFLAGS="$(CFLAGS)" OPENSSL_LIBS="$(LDFLAGS)" \
 		LIBCURL_CFLAGS="$(CFLAGS)" LIBCURL_LIBS="$(LDFLAGS)" \
 		LIBEVENT_CFLAGS="$(CFLAGS)" LIBEVENT_LIBS="$(LDFLAGS)" \
-		LIBS="-lssl -lcrypto -lz -lcurl -levent -levent_core -levent_extra -levent_openssl -levent_pthreads -lm -lrt -ldl" \
+		LIBS="-lssl -lcrypto -lz -lcurl -levent -levent_core -levent_extra -levent_pthreads -lm -lrt -ldl" \
 		$(CONFIGURE) \
 		--enable-lightweight \
 		--disable-silent-rules \
 		) && make
 
-libevent: curl
+libevent: zlib openssl
 	cd libevent-2.0.20-stable && ($(CROSS_COMPILE_ENV) CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" \
 		$(CONFIGURE) \
 		--disable-malloc-replacement \
 		) && make
     
-curl: zlib openssl
-	cd $(BT_PATH)/../curl/curl-7.36.0 && echo "ac_cv_file___dev_urandom_=yes" > config.cache && ($(CROSS_COMPILE_ENV)\
-		CFLAGS="$(CFLAGS)" \
-		LDFLAGS="$(LDFLAGS)" \
-		$(CONFIGURE) -C \
-		--with-ssl=$(BT_PATH)/openssl \
-		--with-zlib=$(BT_PATH)/zlib-1.2.3 \
-		) && make
-
 zlib:
 	cd zlib-1.2.3 && ($(CROSS_COMPILE_ENV) AR="$(AR) cru" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" \
 		./configure \
