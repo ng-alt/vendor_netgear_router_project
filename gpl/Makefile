@@ -43,6 +43,7 @@ SUBDIRS += ntpclient
 SUBDIRS += bzip2
 
 #SUBDIRS +=openssl
+SUBDIRS += openssl-1.0.2h
 #SUBDIRS +=lzo-2.06
 ifeq ($(CONFIG_OPENVPN),y)
 SUBDIRS +=openvpn-2.3.1
@@ -93,7 +94,6 @@ SUBDIRS	+= hdparm-9.43
 SUBDIRS	+= hd-idle-1.04
 endif
 
-SUBDIRS	+= picocom
 # pling added 05/04/2009, for NTFS-3g
 ifeq ($(CONFIG_NTFS_3G),y)
 SUBDIRS += ntfs-3g-2009.3.8
@@ -160,13 +160,20 @@ dlna:
 
 ECOSYSTEM:
 ifeq ($(CONFIG_WGET),y)
-	mkdir -p $(OPENSSL_DIR)/lib && rm -rf $(OPENSSL_DIR)/lib/libssl.so.1.0.0 && cp $(TOOLCHAIN)/usr/lib/libssl.so.1.0.0 $(OPENSSL_DIR)/lib/
+	#mkdir -p $(OPENSSL_DIR)/lib && rm -rf $(OPENSSL_DIR)/lib/libssl.so.1.0.0 && cp $(TOOLCHAIN)/usr/lib/libssl.so.1.0.0 $(OPENSSL_DIR)/lib/
 	cd $(WGET_DIR) && $(CONFIGURE) CFLAGS="$(CFLAGS) -DMB_CUR_MAX=1" LDFLAGS="$(LDFLAGS) -L$(OPENSSL_DIR)" \
 		--with-ssl=openssl --with-libssl-prefix=$(OPENSSL_DIR) --prefix=$(TARGETDIR)
 endif
 	# Foxconn add end by Hank for ecosystem support 08/14/2012	
 
-config: GeoIP_config openvpn_config tcpdump_config
+config: openssl_config GeoIP_config openvpn_config tcpdump_config
+
+openssl_config:
+	if [ ! -f ./openssl-1.0.2h/config.log ];then \
+		cd openssl-1.0.2h && (CC=gcc CFLAGS="$(CFLAGS)" ./config no-asm shared --openssldir=$(TARGETDIR) && make depend) && \
+		touch config.log; \
+	fi
+
 
 libpcap_config:
 	if [ ! -f ./libpcap-1.4.0/Makefile ];then \
