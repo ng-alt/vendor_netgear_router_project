@@ -84,3 +84,4 @@ IPV6RD_ENABLE_FLAG=y
 
 #Foxconn added by Kathy, 04/03/2014 @ xAgent_cloud
 CONFIG_CLOUD_XAGENT_CONF=y
+CONFIG_BT_IGMP=y
