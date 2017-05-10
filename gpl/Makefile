@@ -47,6 +47,7 @@ SUBDIRS += openssl-1.0.2h
 #SUBDIRS +=lzo-2.06
 ifeq ($(CONFIG_OPENVPN),y)
 SUBDIRS +=openvpn-2.3.1
+SUBDIRS +=awsiot
 #SUBDIRS +=GeoIP-1.5.1
 endif
 # allenwen add for openvpn
