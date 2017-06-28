@@ -133,7 +133,3 @@ endif
 ifeq ($(CONFIG_BT_IGMP),y)
 CFLAGS += -DBT_IGMP_SUPPORT
 endif
-
-ifeq ($(CONFIG_OPENVPN),y)
-CFLAGS += -DOPENVPN_SUPPORT
-endif
