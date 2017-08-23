@@ -41,6 +41,7 @@ SUBDIRS += udhcpd
 SUBDIRS += ppp-2.4.4/pppd pppoecd
 SUBDIRS += ntpclient
 SUBDIRS += bzip2
+SUBDIRS += circle
 
 #SUBDIRS +=openssl
 SUBDIRS += openssl-1.0.2h
@@ -89,8 +90,9 @@ SUBDIRS += zeroconf-0.9
 #water, 10/30/2008, @samba
 ifeq ($(SAMBA_ENABLE_FLAG),y)
 #SUBDIRS	+= samba-3.0.13
-SUBDIRS	+= samba-3.0.25b
-SUBDIRS	+= bftpd-1.6.6
+#SUBDIRS	+= samba-3.0.25b
+SUBDIRS	+= samba4
+#SUBDIRS	+= bftpd-1.6.6
 SUBDIRS	+= hdparm-9.43
 SUBDIRS	+= hd-idle-1.04
 endif
