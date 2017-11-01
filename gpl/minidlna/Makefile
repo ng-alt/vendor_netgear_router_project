@@ -50,11 +50,23 @@ all: zlib libogg libexif sqlite3 libvorbis flac libid3tag ffmpeg jpeg
 				MINI_DLNA_PATH=$(MINI_DLNA_PATH)) \
 	done
 	make copy
-	(cd minidlna-1.0.26 && make MINI_DLNA_PATH=$(MINI_DLNA_PATH) \
+
+
+	# Now finally build minidlna
+	if [ ! -f ./minidlna-1.1.5/Makefile ];then \
+		cd minidlna-1.1.5 && (CC=arm-uclibc-linux-2.6.36-gcc ./configure --host=arm --enable-rpath --enable-tivo --enable-netgear \
+		LDFLAGS="-lpthread ${LDFLAGS:-} -Wl,-rpath,../lib -L../lib" \
+		CFLAGS="-g -O3 -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -lpthread -I../ffmpeg-2.3.4/ -I../jpeg-7 -I../ffmpeg-2.3.4/libavformat -I../libvorbis-1.2.3/include \
+		-I../sqlite-3.6.22 -I../libexif-0.6.19 -I../libid3tag-0.15.0b \
+		-I../libogg-1.1.4/include \
+		-I../libvorbis-1.3.5/include/vorbis -I../flac-1.2.1/include \
+		-L../lib"); \
+	fi
+	(cd minidlna-1.1.5 && make MINI_DLNA_PATH=$(MINI_DLNA_PATH) \
 			     CROSS_COMPILE=$(CROSS_COMPILE) \
 			     HOST_COMPILE=$(HOST_COMPILE) \
 			     MINI_DLNA_PATH=$(MINI_DLNA_PATH))
-	cp ./minidlna-1.0.26/minidlna	./lib/minidlna.exe
+	cp ./minidlna-1.1.5/minidlnad	./lib/minidlna.exe
 	#make install
 
 zlib:
@@ -140,9 +152,14 @@ copy:
 	cp ./ffmpeg-2.3.4/libavformat/libavformat.so.55		./lib/libavformat.so.55 && \
 	cp ./ffmpeg-2.3.4/libavcodec/libavcodec.so.55		./lib/libavcodec.so.55 && \
 	cp ./ffmpeg-2.3.4/libswresample/libswresample.so.0	./lib/libswresample.so.0 && \
+	cp ./ffmpeg-2.3.4/libswscale/libswscale.so.2		./lib/libswscale.so.2 && \
+	cp ./ffmpeg-2.3.4/libavfilter/libavfilter.so.4		./lib/libavfilter.so.4 && \
 	cp ./sqlite-3.6.22/.libs/libsqlite3.so.0.8.6 		./lib/libsqlite3.so.0 && \
 	cp ./jpeg-7/.libs/libjpeg.so.7.0.0			./lib/libjpeg.so.7 && \
-	cp ./libid3tag-0.15.0b/.libs/libid3tag.so.0.2.0 	./lib/libid3tag.so.0
+	cp ./libid3tag-0.15.0b/.libs/libid3tag.so.0.2.0 	./lib/libid3tag.so.0 && \
+	cd lib && ln -sf libswresample.so.0 libswresample.so && \
+	ln -sf libswscale.so.2 libswscale.so && \
+	ln -sf libavfilter.so.4 libavfilter.so
 
 distclean:
 	cd ./libogg-1.1.4/	&& make distclean 
@@ -160,20 +177,22 @@ distclean:
 
 install:
 	$(CROSS_COMPILE)strip ./lib/*
-	install -m 755 minidlna-1.0.26/minidlna.conf $(TARGETDIR)/usr/
-	install -m 755 lib/libz.so.1  $(TARGETDIR)/lib
-	install -m 755 lib/libvorbis.so.0 $(TARGETDIR)/lib
-	install -m 755 lib/libFLAC.so.8 $(TARGETDIR)/lib
-	install -m 755 lib/libexif.so.12 $(TARGETDIR)/lib
-	install -m 755 lib/libogg.so.0 $(TARGETDIR)/lib
-	install -m 755 lib/libavutil.so.52 $(TARGETDIR)/lib
-	install -m 755 lib/libavdevice.so.55 $(TARGETDIR)/lib
-	install -m 755 lib/libavformat.so.55 $(TARGETDIR)/lib
-	install -m 755 lib/libswresample.so.0 $(TARGETDIR)/lib
-	install -m 755 lib/libavcodec.so.55 $(TARGETDIR)/lib
-	install -m 755 lib/libsqlite3.so.0 $(TARGETDIR)/lib
-	install -m 755 lib/libjpeg.so.7 $(TARGETDIR)/lib
-	install -m 755 lib/libid3tag.so.0 $(TARGETDIR)/lib
+#	install -m 755 minidlna-1.0.26/minidlna.conf $(TARGETDIR)/usr/
+	install -m 755 minidlna-1.1.5/minidlna.conf $(TARGETDIR)/usr/
+	#install -m 755 lib/libz.so.1  $(TARGETDIR)/lib
+	#install -m 755 lib/libvorbis.so.0 $(TARGETDIR)/lib
+	#install -m 755 lib/libFLAC.so.8 $(TARGETDIR)/lib
+	#install -m 755 lib/libexif.so.12 $(TARGETDIR)/lib
+	#install -m 755 lib/libogg.so.0 $(TARGETDIR)/lib
+	#install -m 755 lib/libavutil.so.52 $(TARGETDIR)/lib
+	#install -m 755 lib/libavdevice.so.55 $(TARGETDIR)/lib
+	#install -m 755 lib/libavformat.so.55 $(TARGETDIR)/lib
+	#install -m 755 lib/libswresample.so.0 $(TARGETDIR)/lib
+	#install -m 755 lib/libavcodec.so.55 $(TARGETDIR)/lib
+	#install -m 755 lib/libsqlite3.so.0 $(TARGETDIR)/lib
+	#install -m 755 lib/libjpeg.so.7 $(TARGETDIR)/lib
+	#install -m 755 lib/libid3tag.so.0 $(TARGETDIR)/lib
+	cp -d lib/*.so* $(TARGETDIR)/lib
 	install -m 755 lib/minidlna.exe $(TARGETDIR)/usr/sbin/
 
 
