@@ -92,7 +92,8 @@ endif
 #water, 10/30/2008, @samba
 ifeq ($(SAMBA_ENABLE_FLAG),y)
 #SUBDIRS	+= samba-3.0.13
-SUBDIRS	+= samba-3.0.25b
+#SUBDIRS	+= samba-3.0.25b
+SUBDIRS += samba4
 SUBDIRS	+= bftpd-1.6.6
 SUBDIRS	+= hdparm-9.43
 SUBDIRS	+= hd-idle-1.04
