@@ -69,8 +69,9 @@ SUBDIRS += zeroconf-0.9
 
 #water, 10/30/2008, @samba
 ifeq ($(SAMBA_ENABLE_FLAG),y)
+SUBDIRS	+= samba4
 #SUBDIRS	+= samba-3.0.13
-SUBDIRS	+= samba-3.0.25b
+#SUBDIRS	+= samba-3.0.25b
 SUBDIRS	+= bftpd-1.6.6
 endif
 
