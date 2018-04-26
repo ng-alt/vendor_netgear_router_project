@@ -36,19 +36,18 @@ SUBDIRS += timemachine
 endif
 #SUBDIRS += dnsmasq
 SUBDIRS += dnsmasq-2.15
+#SUBDIRS += dnsmasq-2.78
 SUBDIRS += udhcpd
 #SUBDIRS += ppp/pppoecd
 SUBDIRS += ppp-2.4.4/pppd pppoecd
 SUBDIRS += ntpclient
 SUBDIRS += bzip2
-SUBDIRS += circle
 
 #SUBDIRS +=openssl
 SUBDIRS += openssl-1.0.2h
 #SUBDIRS +=lzo-2.06
 ifeq ($(CONFIG_OPENVPN),y)
 SUBDIRS +=openvpn-2.3.1
-SUBDIRS +=awsiot
 #SUBDIRS +=GeoIP-1.5.1
 endif
 # allenwen add for openvpn
@@ -92,7 +91,7 @@ ifeq ($(SAMBA_ENABLE_FLAG),y)
 #SUBDIRS	+= samba-3.0.13
 #SUBDIRS	+= samba-3.0.25b
 SUBDIRS	+= samba4
-#SUBDIRS	+= bftpd-1.6.6
+SUBDIRS	+= bftpd-1.6.6
 SUBDIRS	+= hdparm-9.43
 SUBDIRS	+= hd-idle-1.04
 endif
