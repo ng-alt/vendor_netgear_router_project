@@ -12,7 +12,6 @@ SUBDIRS2 += libgpg-error-1.10
 SUBDIRS2 += libgcrypt-1.5.0
 SUBDIRS2 += zlib-1.2.3
 SUBDIRS2 += db-4.7.25.NC/build_unix
-SUBDIRS2 += openssl-0.9.8e
 SUBDIRS2 += netatalk-utility
 SUBDIRS2 += netatalk-2.2.5
 
@@ -154,7 +153,7 @@ ifneq ($(CONFIG_ISERVER),y)
 	install -m 755 $(PKG_INSTALL_DIR)/usr/lib/libxml2.so $(TARGETDIR)/usr/lib/
 	install -m 755 $(PKG_INSTALL_DIR)/usr/lib/libxml2.so.* $(TARGETDIR)/usr/lib/
 endif
-	install -m 755 $(PKG_INSTALL_DIR)/usr/lib/lib{crypto,ssl}.so.* $(TARGETDIR)/usr/lib/
+	#install -m 755 $(PKG_INSTALL_DIR)/usr/lib/lib{crypto,ssl}.so.* $(TARGETDIR)/usr/lib/
 	install -d -m0755 $(TARGETDIR)/usr/lib/uams/
 	install -d -m0755 $(TARGETDIR)/etc/netatalk/
 	rm -f $(TARGETDIR)/etc/netatalk/AppleVolumes.default
