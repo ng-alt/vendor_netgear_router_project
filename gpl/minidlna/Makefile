@@ -159,6 +159,7 @@ distclean:
 
 install:
 	$(CROSS_COMPILE)strip ./lib/*
+	install -d $(TARGETDIR)/lib
 	install -m 755 minidlna.03.14/minidlna.conf $(TARGETDIR)/usr/
 	install -m 755 lib/libz.so.1  $(TARGETDIR)/lib
 	install -m 755 lib/libvorbis.so.0 $(TARGETDIR)/lib
