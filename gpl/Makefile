@@ -22,7 +22,7 @@ include config.in
 SUBDIRS := 
 
 #SUBDIRS += dnsmasq
-SUBDIRS += dnsmasq-2.15
+SUBDIRS += dnsmasq-2.78
 SUBDIRS += udhcpd
 #SUBDIRS += ppp/pppoecd
 SUBDIRS += ppp-2.4.4/pppd pppoecd
