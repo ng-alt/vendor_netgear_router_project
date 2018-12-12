@@ -80,8 +80,8 @@ endif
 .PHONY: install
 install: all
 	install -d $(IPT_INSTALL_DIR)
-	install -d $(IPT_INSTALL_DIR)/lib/iptables
-	install $(IPTABLES_SRC)/extensions/*.so $(IPT_INSTALL_DIR)/lib/iptables
+	install -d $(IPT_INSTALL_DIR)/lib/xtables
+	install $(IPTABLES_SRC)/extensions/*.so $(IPT_INSTALL_DIR)/lib/xtables
 	$(STRIP) $(IPT_INSTALL_DIR)/lib/iptables/*.so
 	cp -rf $(IPTABLES_SRC)/install/sbin $(IPT_INSTALL_DIR)
 	install -d $(INSTALLDIR)/lib
