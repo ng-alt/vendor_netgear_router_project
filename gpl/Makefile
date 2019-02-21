@@ -28,7 +28,8 @@ ifeq ($(CONFIG_TIMEMACHINE),y)
 SUBDIRS += timemachine
 endif
 #SUBDIRS += dnsmasq
-SUBDIRS += dnsmasq-2.15
+#SUBDIRS += dnsmasq-2.15
+SUBDIRS += dnsmasq-2.78
 SUBDIRS += udhcpd
 #SUBDIRS += ppp/pppoecd
 SUBDIRS += ppp-2.4.4/pppd pppoecd
@@ -36,6 +37,7 @@ SUBDIRS += ntpclient
 SUBDIRS += bzip2
 
 #SUBDIRS +=openssl
+SUBDIRS += openssl-1.0.2h
 #SUBDIRS +=lzo-2.06
 ifeq ($(CONFIG_OPENVPN),y)
 SUBDIRS +=openvpn-2.3.1
@@ -145,8 +147,13 @@ ifeq ($(CONFIG_WGET),y)
 		--with-ssl=openssl --with-libssl-prefix=$(OPENSSL_DIR) --prefix=$(TARGETDIR)
 endif
 	# Foxconn add end by Hank for ecosystem support 08/14/2012	
+config: openssl_config GeoIP_config openvpn_config tcpdump_config iperf_config
 
-config: GeoIP_config openvpn_config tcpdump_config iperf_config
+openssl_config:
+	if [ ! -f ./openssl-1.0.2h/config.log ];then \
+		cd openssl-1.0.2h && (CC=gcc CFLAGS="$(CFLAGS)" ./config no-asm shared --openssldir=$(TARGETDIR) && make depend) && \
+		touch config.log; \
+	fi
 
 libpcap_config:
 	if [ ! -f ./libpcap-1.4.0/Makefile ];then \

@@ -18,7 +18,7 @@ SUBDIRS += db-4.7.25.NC/build_unix
 ifneq ($(CONFIG_ISERVER),y)
 SUBDIRS += libxml2-2.7.2
 endif
-SUBDIRS += openssl-0.9.8e
+
 SUBDIRS += netatalk-utility
 SUBDIRS += netatalk-2.2.5
 ifeq ($(ARCH),arm)
@@ -104,7 +104,7 @@ ifneq ($(CONFIG_ISERVER),y)
 	install -m 755 $(PKG_INSTALL_DIR)/usr/lib/libxml2.so $(TARGETDIR)/usr/lib/
 	install -m 755 $(PKG_INSTALL_DIR)/usr/lib/libxml2.so.* $(TARGETDIR)/usr/lib/
 endif
-	install -m 755 $(PKG_INSTALL_DIR)/usr/lib/lib{crypto,ssl}.so.* $(TARGETDIR)/usr/lib/
+	#install -m 755 $(PKG_INSTALL_DIR)/usr/lib/lib{crypto,ssl}.so.* $(TARGETDIR)/usr/lib/
 	install -d -m0755 $(TARGETDIR)/usr/lib/uams/
 	install -d -m0755 $(TARGETDIR)/etc/netatalk/
 	rm -f $(TARGETDIR)/etc/netatalk/AppleVolumes.default
